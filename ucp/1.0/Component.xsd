@@ -1,0 +1,39 @@
+<xs:schema 
+	xmlns:ucp="http://DigitalLeadersInitiative.com/EAMD.ucp/1.0" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://DigitalLeadersInitiative.com/EAMD.ucp/1.0" 
+	elementFormDefault="unqualified" 
+	attributeFormDefault="unqualified">
+	
+	<xs:include schemaLocation="ComponentDescriptorTypes.xsd"/>
+	<xs:element name="component" type="ucp:ComponentType"/>
+	<xs:complexType name="ComponentBaseType">
+		<xs:annotation>
+			<xs:documentation>Using sequence element for better validation performance.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence minOccurs="0">
+			<xs:element name="name" type="ucp:ComponentNameType"/>
+			<xs:element name="version" type="ucp:ComponentVersionType"/>
+			<xs:element name="layer" type="ucp:ArctitectureLayerDomainType"/>
+			<xs:element name="lifecycle" type="ucp:ComponentLifecycleType"/>
+			<xs:element name="displayName" type="ucp:ComponentDisplayNameType"/>
+			<xs:element name="displayImage" type="ucp:DisplayImageType"/>
+			<xs:element name="stereotype" type="ucp:StereotypeType"/>
+			<xs:element name="unitList" type="ucp:UnitListType" minOccurs="0"/>
+			<xs:element name="interfaceList" type="ucp:InterfaceListType" minOccurs="0"/>
+			<xs:element name="package" type="ucp:DependencyListType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ComponentType">
+		<xs:annotation>
+			<xs:documentation>Using sequence element for better validation performance.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ucp:ComponentBaseType">
+				<xs:sequence>
+					<xs:element name="dependency" type="ucp:DependencyType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

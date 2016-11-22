@@ -1,0 +1,81 @@
+<xs:schema 
+	xmlns:ucp="http://DigitalLeadersInitiative.com/EAMD.ucp/1.0" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://DigitalLeadersInitiative.com/EAMD.ucp/1.0" 
+	elementFormDefault="unqualified" 
+	attributeFormDefault="unqualified">
+	<xs:include schemaLocation="ComponentDescriptorTypes.xsd"/>
+	<xs:element name="scenario" type="ucp:ScenarioBaseType"/>
+	<xs:complexType name="ApplicationDescriptorRef">
+		<xs:complexContent>
+			<xs:extension base="ucp:ComponentReference"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PlatformDescriptorRef">
+		<xs:complexContent>
+			<xs:extension base="ucp:ComponentReference"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ScenarioBaseType">
+		<xs:sequence>
+			<xs:element name="applicationDescriptorRef" type="ucp:ApplicationDescriptorRef"/>
+			<xs:element name="platformDescriptorRef" type="ucp:PlatformDescriptorRef"/>
+			<xs:element name="scenarioDescriptorRef" type="ucp:ComponentReference"/>
+
+			<xs:element name="name" type="ucp:ComponentNameType"/>
+			<xs:element name="version" type="ucp:ComponentVersionType"/>
+			<xs:element name="displayName" type="ucp:ComponentDisplayNameType"/>
+			<xs:element name="displayImage" type="ucp:DisplayImageType"/>
+			<xs:element name="stereotype" type="ucp:ScenarioStereotypeType"/>
+			<xs:sequence>
+				<xs:element name="componentConfigurationOverride" type="ucp:ComponentConfigurationType" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ScenarioDescriptorRef">
+		<xs:complexContent>
+			<xs:extension base="ucp:ComponentReference"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ComponentConfigurationType">
+		<xs:complexContent>
+			<xs:extension base="ucp:ComponentReference">
+				<xs:sequence>
+					<xs:element name="configurationList">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="ucp:ConfigurationItemListType"/>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="package" type="ucp:DependencyListType" minOccurs="0"/>
+					<xs:element name="unitList" type="ucp:UnitListType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ScenarioStereotypeType">
+		<xs:annotation>
+			<xs:documentation>
+				Stereotypes. A list of all types for a Scenario, described by a hierarchy.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="name" type="ucp:ScenarioStereotypeNameAttributeType" default="Instance"/>
+	</xs:complexType>
+	<xs:simpleType name="ScenarioStereotypeNameAttributeType">
+		<xs:annotation>
+			<xs:documentation>
+				Refers to a class in a hierarchy. Limited to the list of all possible class names.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Instance"/>
+			<xs:enumeration value="Cluster"/>
+			<xs:enumeration value="UnitTest"/>
+			<xs:enumeration value="ComponentTest"/>
+			<xs:enumeration value="IntegrationTest"/>
+			<xs:enumeration value="SystemTest"/>
+			<xs:enumeration value="AcceptanceTest"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

@@ -1,0 +1,385 @@
+<xs:schema 
+	xmlns:ucp="http://DigitalLeadersInitiative.com/EAMD.ucp/1.0" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://DigitalLeadersInitiative.com/EAMD.ucp/1.0" 
+	elementFormDefault="unqualified" 
+	attributeFormDefault="unqualified">
+	<!--xs:element name="component" type="ucp:ComponentReferenceType" maxOccurs="unbounded" minOccurs="0"/-->
+	<xs:complexType name="ComponentReference">
+		<xs:annotation>
+			<xs:documentation>
+				A simple reference to component using its identificators only.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="name" type="ucp:ComponentNameType" use="required"/>
+		<xs:attribute name="version" type="ucp:ComponentVersionAttributeType" use="required"/>
+		<xs:attribute name="maxVersion" type="ucp:ComponentVersionAttributeType"/>
+	</xs:complexType>
+	<xs:complexType name="ConfigurationItemType">
+		<xs:annotation>
+			<xs:documentation>Key value pairs</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="key" type="xs:string" use="required"/>
+		<xs:attribute name="value" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="DependencyType">
+		<xs:annotation>
+			<xs:documentation>
+				Extends ComponentReference with type field.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="type" type="ucp:DependencyTypeAttributeType" use="required"/>
+		<xs:attribute name="name" type="ucp:ComponentNameType" use="required"/>
+		<xs:attribute name="version" type="ucp:ComponentVersionAttributeType" use="required"/>
+		<xs:attribute name="minVersion" type="ucp:ComponentVersionAttributeType"/>
+		<xs:attribute name="maxVersion" type="ucp:ComponentVersionAttributeType"/>
+	</xs:complexType>
+	<xs:complexType name="DisplayImageType">
+		<xs:annotation>
+			<xs:documentation>
+				Linked resource, can also be embedded.<br/>
+				The image type must be SVG.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="href" type="xs:string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="InterfaceType">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="type" type="ucp:InterfaceTypeAttributeType" use="required"/>
+				<xs:attribute name="name" type="xs:string"/>
+				<xs:attribute name="unitName" type="xs:string"/>
+				<xs:attribute name="version" type="ucp:InterfaceVersionType"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="PropertyType">
+		<xs:annotation>
+			<xs:documentation>
+				A key for a property. The values later will be assigned by the scenario descriptor.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="key" type="xs:string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="ComponentLifecycleType">
+		<xs:annotation>
+			<xs:documentation>
+				Stereotypes. A long list of all types of Platforms, Application described by an hierarchy.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="phase" type="ucp:ComponentLifecycleAttributeType" default="suggested"/>
+	</xs:complexType>
+	<xs:complexType name="StereotypeType">
+		<xs:annotation>
+			<xs:documentation>
+				Stereotypes. A long list of all types of Platforms, Application described by an hierarchy.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="name" type="ucp:StereotypeNameAttributeType" default="Component"/>
+	</xs:complexType>
+	<xs:complexType name="UnitType">
+		<xs:annotation>
+			<xs:documentation>
+				A file, url, content, etc. that is not a component (has no self-describing interface).<br/>
+				The href attribute, if present, must represent a path relative to containing descriptor's location in repository.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="lifecycle" type="ucp:UnitLifecycleAttributeType"/>
+				<xs:attribute name="type" type="ucp:UnitTypeAttributeType" default="unit-type-default"/>
+				<xs:attribute name="name" type="xs:string"/>
+				<xs:attribute name="href" type="xs:string"/>
+				<xs:attribute name="version" type="xs:string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="ArctitectureLayerDomainType">
+		<xs:annotation>
+			<xs:documentation>
+				Content intentionally restricted to enumeration for flexibility in using numbers or layer names.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+			<xs:enumeration value="4"/>
+			<xs:enumeration value="5"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ComponentDisplayNameType">
+		<xs:annotation>
+			<xs:documentation>
+				Human-readable name, not necessarily unique.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="ComponentNameType">
+		<xs:annotation>
+			<xs:documentation>
+				Distinguished name for this component. Must be unique within the target scope.<br/>
+				Represents the component descriptor location in repository, using dots as step separators.<br/>
+				The target repository is Nexus/Maven, where the part before last dot is considered a Maven groupId and the part after last dot - Maven artifactId.<br/>
+				Example: com.softwareag.webmethods.wmIntegrationServer<br/>
+				, where groupId=com.softwareag.webmethods and artifactId=wmIntegrationServer
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="ComponentVersionAttributeType">
+		<xs:annotation>
+			<xs:documentation>
+				Versions must be mutually comparable by &lt;, &lt;=, =, &gt;= and &gt; operators.<br/>
+				For EIP-owned components, version string follows the Maven notation: XX.XX.XX<br/>
+				For platform and other external components, version follows vendor's notation and may be any format.<br/>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="ComponentVersionType">
+		<xs:annotation>
+			<xs:documentation>
+				Versions must be mutually comparable by &lt;, &lt;=, =, &gt;= and &gt; operators.<br/>
+				For EIP-owned components, version string follows the Maven notation: XX.XX.XX<br/>
+				For platform and other external components, version follows vendor's notation and may be any format.<br/>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="DependencyTypeAttributeType">
+		<xs:annotation>
+			<xs:documentation>
+				Dependency type determines how to handle it. Values to be added on demand. Values restricted to: requires | excludes | etc.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="requires"/>
+			<xs:enumeration value="excludes"/>
+			<xs:enumeration value="other"/>
+			<xs:enumeration value="contains"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="InterfaceTypeAttributeType">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Semantic"/>
+
+			<xs:enumeration value="sh"/>
+			<xs:enumeration value="bat"/>
+
+			<xs:enumeration value="WSDL"/>
+			<xs:enumeration value="IDL"/>
+			<xs:enumeration value="RMI"/>
+			<xs:enumeration value="Java"/>
+			
+			<xs:enumeration value="REST"/>
+			<xs:enumeration value="JSON"/>
+
+			<xs:enumeration value="WebDAV"/>
+			<xs:enumeration value="CalDAV"/>
+			<xs:enumeration value="CardDAV"/>
+
+			<xs:enumeration value="JMS"/>
+			<xs:enumeration value="Queue"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="InterfaceVersionType">
+		<xs:annotation>
+			<xs:documentation>
+				Versions must be mutually comparable by &lt;, &lt;=, =, &gt;= and &gt; operators.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="StereotypeNameAttributeType">
+		<xs:annotation>
+			<xs:documentation>
+				Refers to a class in a hierarchy. Limited to the list of all possible class names.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Component"/>
+			<xs:enumeration value="Application"/>
+			<xs:enumeration value="Application::Installer"/>
+			<xs:enumeration value="Application::OSGi"/>
+			<xs:enumeration value="Application::JEE-EJB"/>
+			<xs:enumeration value="Application::JEE-WEB"/>
+			<xs:enumeration value="Application::Process"/>
+			<xs:enumeration value="Application::SwingJFrame"/>
+			<xs:enumeration value="Container"/>
+			<xs:enumeration value="Container::Package"/>
+			<xs:enumeration value="Container::Package::Repository"/>
+			<xs:enumeration value="Container::OSGi"/>
+			<xs:enumeration value="Container::JEE-EJB"/>
+			<xs:enumeration value="Container::JEE-WEB"/>
+			<xs:enumeration value="Container::Process"/>
+			<xs:enumeration value="Container::SwingJFrame"/>
+			<xs:enumeration value="Platform"/>
+			<xs:enumeration value="Platform::OS"/>
+			<xs:enumeration value="Instance"/>
+			<xs:enumeration value="Form"/>
+			<xs:enumeration value="Form::WODA"/>
+			<xs:enumeration value="Form::What"/>
+			<xs:enumeration value="Form::Overview"/>
+			<xs:enumeration value="Form::Detail"/>
+			<xs:enumeration value="Action"/>
+			<xs:enumeration value="Process"/>
+			<xs:enumeration value="Service"/>
+			<xs:enumeration value="Adapter"/>
+			<xs:enumeration value="Adapter::Reader"/>
+			<xs:enumeration value="Adapter::Transformer"/>
+			<xs:enumeration value="Adapter::Writer"/>
+			<xs:enumeration value="System"/>
+			
+			
+			<!-- Vendor Specific -->
+			<xs:enumeration value="Application::TIBCO-AMX"/>
+			<xs:enumeration value="Application::TIBCO-BusinessWorks"/>
+			<xs:enumeration value="Application::TIBCO-MDM"/>
+			<xs:enumeration value="Application::SAG-wmTaskEngine"/>
+			<xs:enumeration value="Application::SAG-wmMediator"/>
+			<xs:enumeration value="Application::SAG-wmProcessRuntime"/>
+
+			<xs:enumeration value="Container::TIBCO-AMX"/>
+			<xs:enumeration value="Container::TIBCO-BusinessWorks"/>
+			<xs:enumeration value="Container::TIBCO-MDM"/>
+			<xs:enumeration value="Container::SAG-wmTaskEngine"/>
+			<xs:enumeration value="Container::SAG-wmMediator"/>
+			<xs:enumeration value="Container::SAG-wmProcessRuntime"/>
+
+			<xs:enumeration value="Platform::SAG"/>
+			<xs:enumeration value="Platform::SAG-wmOptimizeForInfrastructure"/>
+			<xs:enumeration value="Platform::EIP"/>
+			<xs:enumeration value="Platform::TIBCO-AMX"/>
+			<xs:enumeration value="Platform::TIBCO-Classic"/>
+			<xs:enumeration value="Platform::TIBCO-ClassicTRA"/>
+			<xs:enumeration value="Platform::TIBCO-AMXNode"/>
+			<xs:enumeration value="Platform::TIBCO-AMXAdministrator"/>
+			<xs:enumeration value="Platform::TIBCO-AMXAdministratorSecondary"/>
+			<xs:enumeration value="Platform::TIBCO-ClassicAdministrator"/>
+			<xs:enumeration value="Platform::TIBCO-BusinessWorks"/>
+			<xs:enumeration value="Platform::TIBCO-EMS"/>
+			<xs:enumeration value="Platform::TIBCO-EMSDestination"/>
+			<xs:enumeration value="Platform::TIBCO-MDM"/>
+			<xs:enumeration value="Platform::SAG-wmIntegrationServer"/>
+			<xs:enumeration value="Platform::SAG-wmUniversalMessaging"/>
+			<xs:enumeration value="Platform::SAG-BPMMonitoring"/>
+			<xs:enumeration value="Platform::SAG-BPMRUN"/>
+			<xs:enumeration value="Platform::SAG-wmCommandCentral"/>
+			<xs:enumeration value="Platform::SAG-wmMyWebmethods"/>
+			<xs:enumeration value="Platform::SAG-Installer"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="UnitTypeAttributeType">
+		<xs:annotation>
+			<xs:documentation>
+				xs:string to allow free definition of types at this moment
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:complexType name="UnitListType">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="unit" type="ucp:UnitType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DependencyListType">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="componentRef" type="ucp:ComponentReference" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="dependency" type="ucp:DependencyType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="InterfaceListType">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="interface" type="ucp:InterfaceType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="property" type="ucp:PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ConfigurationItemListType">
+		<xs:annotation>
+			<xs:documentation>
+				List of configuration items.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="configurationItem" type="ucp:ConfigurationItemType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+		<xs:simpleType name="UnitLifecycleAttributeType">
+		<xs:annotation>
+			<xs:documentation>
+			  The unit which defines the command to execute this lifecycle task for this component
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="repository:origin"/>
+			<xs:enumeration value="repository:src"/>
+			<xs:enumeration value="repository:bin"/>
+
+			<xs:enumeration value="build"/>
+
+			<xs:enumeration value="package"/>
+			<xs:enumeration value="release"/>
+			<xs:enumeration value="install"/>
+			<xs:enumeration value="install:configure"/>
+			<xs:enumeration value="deploy"/>
+			<xs:enumeration value="deploy:configure"/>
+			
+			<xs:enumeration value="start"/>
+			<xs:enumeration value="stop"/>
+			<xs:enumeration value="kill"/>
+
+			<xs:enumeration value="ping"/>
+			<xs:enumeration value="test"/>
+
+			<xs:enumeration value="monitoring"/>
+
+			<xs:enumeration value="documentation"/>
+			
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ComponentLifecycleAttributeType">
+		<xs:annotation>
+			<xs:documentation>
+			  Possible Values for the components governance lifecycle phase
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="suggested"/>
+			<xs:enumeration value="declined"/>
+
+			<xs:enumeration value="accepted"/>
+			
+			<xs:enumeration value="ordered"/>
+			<xs:enumeration value="released"/>
+			<xs:enumeration value="integration"/>
+			<xs:enumeration value="operation"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+</xs:schema>

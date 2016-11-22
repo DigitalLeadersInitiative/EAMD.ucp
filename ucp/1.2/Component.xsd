@@ -1,0 +1,44 @@
+<xs:schema 
+	xmlns:ucp="http://DigitalLeadersInitiative.com/EAMD.ucp/1.2" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://DigitalLeadersInitiative.com/EAMD.ucp/1.2" 
+	elementFormDefault="unqualified" 
+	attributeFormDefault="unqualified">
+	
+	<xs:include schemaLocation="ComponentDescriptorTypes.xsd"/>
+	<xs:element name="component" type="ucp:ComponentType"/>
+	<xs:complexType name="ComponentBaseType">
+		<xs:annotation>
+			<xs:documentation>Using sequence element for better validation performance.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence minOccurs="0">
+			<xs:element name="name" type="ucp:ComponentNameType" 									minOccurs="1"/>
+			<xs:element name="version" type="ucp:ComponentVersionType"/>
+			<xs:element name="layer" type="ucp:ArctitectureLayerDomainType" 						minOccurs="1"/>
+			<xs:element name="lifecycle" type="ucp:ComponentLifecycleType" 							minOccurs="1"/>
+			<xs:element name="displayName" type="ucp:ComponentDisplayNameType" 						minOccurs="1"/>
+			<xs:element name="detailText" type="xs:string"/>
+			<xs:element name="displayImage" type="ucp:DisplayImageType" 							minOccurs="1"/>
+			<xs:element name="stereotype" type="ucp:StereotypeType" 								minOccurs="1"/>
+			<xs:element name="unitList" type="ucp:UnitListType" minOccurs="0"/>
+			<xs:element name="interfaceList" type="ucp:InterfaceListType" minOccurs="0"/>
+			<xs:element name="package" type="ucp:PackageListType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ComponentType">
+		<xs:annotation>
+			<xs:documentation>Using sequence element for better validation performance.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ucp:ComponentBaseType">
+				<xs:sequence>
+					<xs:element name="dependency" type="ucp:DependencyType" minOccurs="0" maxOccurs="unbounded"/>
+
+					<xs:element name="container" type="ucp:DependencyType" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="componentInterface" type="ucp:DependencyType" minOccurs="0" maxOccurs="1"/>
+
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

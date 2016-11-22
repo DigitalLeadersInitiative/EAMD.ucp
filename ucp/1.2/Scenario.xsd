@@ -1,0 +1,52 @@
+<xs:schema 
+	xmlns:ucp="http://DigitalLeadersInitiative.com/EAMD.ucp/1.2" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://DigitalLeadersInitiative.com/EAMD.ucp/1.2" 
+	elementFormDefault="unqualified" 
+	attributeFormDefault="unqualified">
+	<xs:include schemaLocation="ComponentDescriptorTypes.xsd"/>
+
+	<xs:element name="scenario" type="ucp:ScenarioBaseType"/>
+	<xs:complexType name="ScenarioBaseType">
+		<xs:sequence>
+			<xs:element name="myComponentRef" type="ucp:ComponentReference" 						minOccurs="1"/>
+
+			<xs:element name="name" type="ucp:ComponentNameType" 									minOccurs="1"/>
+			<xs:element name="version" type="ucp:ComponentVersionType"/>
+			<xs:element name="displayName" type="ucp:ComponentDisplayNameType" 						minOccurs="1"/>
+			<xs:element name="displayImage" type="ucp:DisplayImageType" 							minOccurs="1"/>
+			<xs:element name="stereotype" type="ucp:ScenarioStereotypeType"/>
+			<xs:element name="lifecycle" type="ucp:ScenarioLifecycleType"/>
+			<xs:sequence>
+				<xs:element name="componentConfigurationOverride" type="ucp:ComponentConfigurationType" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="ComponentConfigurationType">
+		<xs:complexContent>
+			<xs:extension base="ucp:ComponentReference">
+				<xs:sequence>
+					<xs:element name="configurationList">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="ucp:ConfigurationItemListType"/>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					
+					<xs:element name="scenarioList" minOccurs="0">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="ucp:ScenarioListType"/>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					
+					<xs:element name="package" type="ucp:PackageListType" minOccurs="0"/>
+					<xs:element name="unitList" type="ucp:UnitListType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>
