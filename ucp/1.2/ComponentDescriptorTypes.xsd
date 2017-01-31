@@ -380,13 +380,15 @@
 			<xs:enumeration value="repository:bin"><xs:annotation><xs:documentation>binary repository location (package)</xs:documentation></xs:annotation></xs:enumeration>
 
 
-			<xs:enumeration value="build:prepare"><xs:annotation><xs:documentation>compile action</xs:documentation></xs:annotation></xs:enumeration>
-			<xs:enumeration value="build"><xs:annotation><xs:documentation>compile action</xs:documentation></xs:annotation></xs:enumeration>
+			<xs:enumeration value="build:prepare"><xs:annotation><xs:documentation>prepare buid action</xs:documentation></xs:annotation></xs:enumeration>
+			<xs:enumeration value="build"><xs:annotation><xs:documentation>build action</xs:documentation></xs:annotation></xs:enumeration>
 
 			<xs:enumeration value="package"><xs:annotation><xs:documentation>create package from compiled artifacts</xs:documentation></xs:annotation></xs:enumeration>
 			<xs:enumeration value="package:archive"><xs:annotation><xs:documentation>car or par - zip file with component or package from compiled artifacts</xs:documentation></xs:annotation></xs:enumeration>
 			<xs:enumeration value="package:manager"><xs:annotation><xs:documentation>describe the package manager used for package deployment</xs:documentation></xs:annotation></xs:enumeration>
+
 			<xs:enumeration value="release"><xs:annotation><xs:documentation>release of the software component</xs:documentation></xs:annotation></xs:enumeration>
+
 			<xs:enumeration value="install"><xs:annotation><xs:documentation>used for infrastructure software installation</xs:documentation></xs:annotation></xs:enumeration>
 			<xs:enumeration value="install:configure"><xs:annotation><xs:documentation>infrastructure software deployment configuration</xs:documentation></xs:annotation></xs:enumeration>
 
@@ -404,6 +406,14 @@
 			<xs:enumeration value="test"><xs:annotation><xs:documentation>test component action</xs:documentation></xs:annotation></xs:enumeration>
 
 			<xs:enumeration value="monitoring"><xs:annotation><xs:documentation>monitoring component configuration</xs:documentation></xs:annotation></xs:enumeration>
+
+			<xs:enumeration value="retire"><xs:annotation><xs:documentation>used for infrastructure software installation</xs:documentation></xs:annotation></xs:enumeration>
+
+			<xs:enumeration value="undeploy:prepare"><xs:annotation><xs:documentation>application deployment configuration</xs:documentation></xs:annotation></xs:enumeration>
+			<xs:enumeration value="undeploy"><xs:annotation><xs:documentation>used for application deployment</xs:documentation></xs:annotation></xs:enumeration>
+
+			<xs:enumeration value="uninstall"><xs:annotation><xs:documentation>used for infrastructure software installation</xs:documentation></xs:annotation></xs:enumeration>
+
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="ComponentLifecycleAttributeType">
